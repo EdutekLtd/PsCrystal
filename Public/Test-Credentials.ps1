@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
         Sets database credentials
     .DESCRIPTION
@@ -34,41 +34,25 @@
         Some notes
 #>
 
-function Set-Credentials {
+function Test-Credentials {
 
 	[cmdletbinding()]
     param (
-        [Parameter(ValueFromPipeline=$true,Position=0,Mandatory=$true)][CrystalDecisions.CrystalReports.Engine.ReportDocument]$reportDocument,
-        [string]$acct,
-        [string]$pass,
-        [string]$svr,
-        [string]$dtb
+        [Parameter(ValueFromPipeline=$true,Position=0,Mandatory=$true)][CrystalDecisions.CrystalReports.Engine.ReportDocument]$reportDocument
     )
 
     begin {Write-Verbose "$($MyInvocation.MyCommand.Name)::Begin"}
 
     process {
 
-        #try {
-            Write-Verbose "Updating Credentials..."
+            Write-Verbose "Testing Database Credentials..."
 
-            $reportDocument.DataSourceConnections.Clear()
-            $reportDocument.DataSourceConnections[0].SetConnection("$svr", "$dtb", "$acct", "$pass")
-        <#    foreach ($table in $reportDocument.database.tables) {
+            foreach ($table in $reportDocument.database.tables) {
                 if ( $table.testConnectivity() -eq $false ) {
-                    throw "Invalid database credentials - {0}@{1}" -f $acct, $svr
+                    throw "Invalid database credentials" 
                 }
             }
             $reportDocument.VerifyDatabase()
-#>
-        #}
-    #    catch [crystaldecisions.crystalreports.engine.LogOnException] {
-    #        throw "Invalid database credentials - {0}@{1}" -f $acct, $svr
-    #    }
-        #catch [Exception] {
-        #    write-host $_.Exception.message
-        #}
-        #return $reportDocument
     }
 
     end {Write-Verbose "$($MyInvocation.MyCommand.Name)::End"}
